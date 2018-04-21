@@ -1,0 +1,26 @@
+1.用户首先进入list页面,看到所有秒杀详情  queryAll();
+2.用户点击其中一个detail按钮,然后进入一个seckill的详情页, queryById();
+3.进入这个页面的时候要对页面进行初始化
+    一验证用户是否登录
+        cookie中是否有userphone,$.cookie('userphone')是不是为null
+        如果没有就弹出模态框,用户必须填写自己的正确的手机号,如果手机号不正确,弹出一个信息,说手机号不正确
+        如果手机号正确,那么点击submit按钮的时候就将手机号存到cookie中$.cookie('userphone',userphone,{expire:7,path:'/seckill'});
+        然后刷新页面,此时页面加载的时候会在此执行上面的登录验证流程,但是此时cookie中是存在东西了的。
+
+    二进行计时交互
+        用户登录后,就开始执行计时流程,给starttime endtime 和nowtime和seckillid进行计时
+        如果时间超过了,那么就会在seckillBox里面显示秒杀结束
+        如果还没有开始,那么就开始countdown  $("#seckillBox").countdown(timestamp, function(event){...}).on(执行秒杀);
+
+    三秒杀逻辑
+        根据seckillID来获取秒杀路径,如果seckillID为空,Exposer(false,seckillId),如果seckillId查出来的seckill不存在,Exposer
+        如果根据seckillId查找出来了,那么就Exposer(true,seckillId,md5),那么就显示“开始秒杀按钮”,并绑定一次点击事件,点击的时候用
+        seckillId,md5去执行秒杀,如果seckillId和md5对不上,那么就throw new SeckillException("数据被篡改");
+
+        否则,就reduceNumber(seckillId, time);如果影响的条数小于0,那么就是已经结束了throw new ClosedException()。
+        否则插入秒杀行为,insertSuccessedKilled(seckillId, @CookieValue('userphone') userphone),如果插入影响条数为0,那么
+        throw new RepeatSeckillException(),此时需要catch,然后继续抛给上一层。
+
+        否则就是成功了,return seckillexecution(seckillId, SUCCESS, successedKill);
+
+        一定需要有MD5才算能够开始秒杀，否则是不行的。

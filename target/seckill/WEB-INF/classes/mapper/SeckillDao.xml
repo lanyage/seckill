@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanyage.seckill.dao.SeckillDao">
+    <!--目的:为Dao接口方法提供sql语句配置-->
+
+    <!--减库存-->
+    <update id="reduceNumber">
+        <!--具体的sql-->
+        /*只有当时间在开始时间和介绍时间之间的时候才能执行秒杀,并且库存必须足够*/
+        update
+        seckill
+        set
+        number = number - 1
+        where seckill_id = #{seckillId}
+        and start_time <![CDATA[<=]]> #{killTime}
+        and end_time >= #{killTime}
+        and number > 0 ;
+    </update>
+
+    <!--按照ID查询秒杀的详细信息-->
+    <select id="queryById" resultType="Seckill" parameterType="long">
+        SELECT seckill_id,name,number,start_time,end_time,create_time
+        FROM seckill
+        where seckill_id = #{seckillId}
+    </select>
+
+    <!--查询秒杀列表-->
+    <select id="queryAll" resultType="Seckill">
+      SELECT seckill_id,name,number,start_time,end_time,create_time
+      FROM seckill
+      ORDER BY create_time DESC
+      limit #{offset},#{limit}
+    </select>
+
+    <!--使用mybatis去调用咱们的存储过程-->
+    <select id="killByProcedure" statementType="CALLABLE">
+        call execute_seckill (
+          #{seckillId, jdbcType=BIGINT, mode=IN},
+          #{phone, jdbcType = BIGINT,mode = IN},
+          #{killTime, jdbcType=TIMESTAMP,mode = IN},
+          #{result, jdbcType=INTEGER, mode = OUT}
+        )
+    </select>
+</mapper>
