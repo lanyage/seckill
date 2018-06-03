@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="zlhr:war">
+    <output-path>$PROJECT_DIR$/../zlhr/target</output-path>
+    <root id="archive" name="seckill.war">
+      <element id="artifact" artifact-name="zlhr:war exploded" />
+    </root>
+  </artifact>
+</component>

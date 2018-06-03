@@ -51,7 +51,7 @@ public interface SeckillDao {
     List<Seckill> queryAll(@Param("offset")int offset, @Param("limit")int limit);
 
     /**
-     *通过存储过程执行sql语句，这样的话可以减少行级锁持有的时间，先插入记录，然后再减库存
+     * 通过存储过程执行sql语句，这样的话可以减少行级锁持有的时间，先插入记录，然后再减库存
      */
     void killByProcedure(Map<String, Object> paramMap);
 }

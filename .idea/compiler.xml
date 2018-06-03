@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="seckill" />
+        <module name="zlhr" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="seckill" target="1.6" />
+      <module name="zlhr" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
